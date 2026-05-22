@@ -85,6 +85,7 @@ RUN mkdir -p \
 # Database
 # -------------------------------------------------------
 RUN php artisan migrate --force || true
+RUN php artisan db:seed --class=RoleSeeder || true
 
 # -------------------------------------------------------
 # Start server

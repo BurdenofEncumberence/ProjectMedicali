@@ -12,20 +12,18 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-   
-        $admin     = Role::create(['name' => 'admin']);
-        $pharmacist = Role::create(['name' => 'pharmacist']);
-        $manager   = Role::create(['name' => 'inventory_manager']);
-        $cashier   = Role::create(['name' => 'cashier']);
+        $admin      = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $pharmacist = Role::firstOrCreate(['name' => 'pharmacist', 'guard_name' => 'web']);
+        $manager    = Role::firstOrCreate(['name' => 'inventory_manager', 'guard_name' => 'web']);
+        $cashier    = Role::firstOrCreate(['name' => 'cashier', 'guard_name' => 'web']);
 
-       
-        Permission::create(['name' => 'view-medicines']);
-        Permission::create(['name' => 'manage-medicines']);
-        Permission::create(['name' => 'delete-medicines']);
-        Permission::create(['name' => 'manage-prescriptions']);
-        Permission::create(['name' => 'process-sales']);
-        Permission::create(['name' => 'view-reports']);
-        Permission::create(['name' => 'manage-users']);
+        Permission::firstOrCreate(['name' => 'view-medicines']);
+        Permission::firstOrCreate(['name' => 'manage-medicines']);
+        Permission::firstOrCreate(['name' => 'delete-medicines']);
+        Permission::firstOrCreate(['name' => 'manage-prescriptions']);
+        Permission::firstOrCreate(['name' => 'process-sales']);
+        Permission::firstOrCreate(['name' => 'view-reports']);
+        Permission::firstOrCreate(['name' => 'manage-users']);
 
         $admin->givePermissionTo(Permission::all());
 
@@ -45,41 +43,44 @@ class RoleSeeder extends Seeder
             'process-sales',
         ]);
 
-  
-        $adminUser = User::create([
-            'name'              => 'Admin',
-            'email'             => 'admin@gmail.com',
-            'password'          => Hash::make('admin1234'),
-            'email_verified_at' => now(),
-        ]);
-
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name'              => 'Admin',
+                'password'          => Hash::make('admin1234'),
+                'email_verified_at' => now(),
+            ]
+        );
         $adminUser->assignRole('admin');
 
-        // Pharmacist account
-        $pharmacist = User::create([
-            'name'              => 'Pharmacist',
-            'email'             => 'pharmacist@medicali.com',
-            'password'          => Hash::make('pharma1234'),
-            'email_verified_at' => now(),
-        ]);
-        $pharmacist->assignRole('pharmacist');
+        $pharmacistUser = User::firstOrCreate(
+            ['email' => 'pharmacist@medicali.com'],
+            [
+                'name'              => 'Pharmacist',
+                'password'          => Hash::make('pharma1234'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $pharmacistUser->assignRole('pharmacist');
 
-        // Inventory Manager account
-        $manager = User::create([
-            'name'              => 'Inventory Manager',
-            'email'             => 'manager@medicali.com',
-            'password'          => Hash::make('manager1234'),
-            'email_verified_at' => now(),
-        ]);
-        $manager->assignRole('inventory_manager');
+        $managerUser = User::firstOrCreate(
+            ['email' => 'manager@medicali.com'],
+            [
+                'name'              => 'Inventory Manager',
+                'password'          => Hash::make('manager1234'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $managerUser->assignRole('inventory_manager');
 
-        // Cashier account
-        $cashier = User::create([
-            'name'              => 'Cashier',
-            'email'             => 'cashier@medicali.com',
-            'password'          => Hash::make('cashier1234'),
-            'email_verified_at' => now(),
-        ]);
-        $cashier->assignRole('cashier');
+        $cashierUser = User::firstOrCreate(
+            ['email' => 'cashier@medicali.com'],
+            [
+                'name'              => 'Cashier',
+                'password'          => Hash::make('cashier1234'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $cashierUser->assignRole('cashier');
     }
 }
