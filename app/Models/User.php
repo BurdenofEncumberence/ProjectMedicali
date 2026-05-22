@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -32,7 +32,19 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-   
+    /**
+     * Only admins require email verification
+     */
+    public function hasVerifiedEmail()
+    {
+        // Non-admin users are automatically treated as verified
+        if (!$this->hasRole('admin')) {
+            return true;
+        }
+
+        return ! is_null($this->email_verified_at);
+    }
+
     public function sales()
     {
         return $this->hasMany(Sale::class);

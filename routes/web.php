@@ -14,12 +14,13 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-    // All roles
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard (all authenticated users)
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-    // Profile — all roles
+    // Profile (all roles)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -37,25 +38,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('role:admin|pharmacist');
 
     // Checkout — admin and cashier only
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index')
+    Route::get('/checkout', [CheckoutController::class, 'index'])
+        ->name('checkout.index')
         ->middleware('role:admin|cashier');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')
+
+    Route::post('/checkout', [CheckoutController::class, 'store'])
+        ->name('checkout.store')
         ->middleware('role:admin|cashier');
-    Route::get('/checkout/receipt/{sale}', [CheckoutController::class, 'receipt'])->name('checkout.receipt')
+
+    Route::get('/checkout/receipt/{sale}', [CheckoutController::class, 'receipt'])
+        ->name('checkout.receipt')
         ->middleware('role:admin|cashier');
 
     // Sales — admin, cashier, inventory manager
-    Route::get('/sales', [SaleController::class, 'index'])->name('sales.index')
+    Route::get('/sales', [SaleController::class, 'index'])
+        ->name('sales.index')
         ->middleware('role:admin|cashier|inventory_manager');
-    Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show')
+
+    Route::get('/sales/{sale}', [SaleController::class, 'show'])
+        ->name('sales.show')
         ->middleware('role:admin|cashier|inventory_manager');
 
     // Reports — admin and inventory manager only
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->name('reports.index')
         ->middleware('role:admin|inventory_manager');
 
-    Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
-
+    Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])
+        ->name('reports.export-pdf');
 });
 
 require __DIR__.'/auth.php';
